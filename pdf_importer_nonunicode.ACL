@@ -1,0 +1,215 @@
+@ACL1000
+
+^LAYOUT   Payroll                            395 D.T,
+Employee_Name  ASCII       1  15    
+Company        ASCII      16  15    
+Pay_Date       DATETIME   31   8   PICTURE "YYYYMMDD"  
+SSN            ASCII      39  12    
+Total_Gross    ACL        51  12 2  
+FICA           ACL        63  12 2  
+Federal_WH     ACL        75  12 2  
+State_WH       ACL        87  12 2  
+Net_Pay        ACL        99  12 2  
+Check_Number   ASCII     111  14    
+Gross_Pay_Description_1 ASCII     125  22    
+Gross_Pay__1   ACL       147  12 2 AS "Gross_Pay _1"  
+Gross_Pay_Description_2 ASCII     159  22    
+Gross_Pay_2    ACL       181  12 2  
+Gross_Pay_Description_3 ASCII     193  22    
+Gross_Pay_3    ACL       215  12 2  
+Gross_Pay_Description_4 ASCII     227  22    
+Gross_Pay_4    ACL       249  12 2  
+Dept_Gross     ACL       261  12 2  
+Dept_FICA      ACL       273  12 2  
+Dept_Fed_WH    ACL       285  12 2  
+Dept_State_WH  ACL       297  12 2  
+Dept_Net_Paid  ACL       309  12 2  
+Dept_Number    ASCII     321  13    
+Company_Gross  ACL       334  12 2  
+Company_FICA   ACL       346  12 2  
+Company_Fed_WH ACL       358  12 2  
+Company_State_WH ACL       370  12 2  
+Company_Net_Paid ACL       382  12 2  
+^LOGFILE  pdf_importer_nonunicode             "" "pdf_importer_nonunicode.LOG"
+[PARENT_FOLDER_ID] 0
+^BATCH    Copy_In_From_an_Importer_Projec    
+[PARENT_FOLDER_ID] 0
+COMMENT
+********************************************************************************
+*** Thanks to originator Shahed Khalili
+*** This script will automate imports of pdf documents using ACL Importer
+*** It assumes you have created a parsing template in ACL Importer and saved 
+*** the project. 
+***
+*** 
+*** What you need
+*** 
+*** ACLImporter.exe   : ACL Importer must be installed on the same machine
+*** %PATH%            : ACLImporter.exe must be added to the %PATH% Windows
+***                     environment variable (*or you can change the EXECUTE
+***                     command in the script
+*** 
+*** Parsing templates  : You need to use ACL Importer and define a template for 
+***                     desired pdf document. Save the template Model and Project
+***                     *.xmod is the model file that you will need to pass through
+***                     the EXECUTE command
+***                    
+*** Parameters:
+*** v_Importerpath       : the directory where the PDF is stored, this will also be where the Import output, 
+***                        both the .ACL project and the associated .FIL data file will be placed by ACL Importer
+*** v_thisprojectpath    : the path where this project resides (can be different that the Importer path)
+*** v_report             : name of the source PDF file we wish to convert to data and add to this project
+*** v_model              : name of the Importer model file (pdf to .FIL parsing template) .xmod
+*** v_exportoption       : .ACL and .FIL processing parameters you wish to pass to ACL Importer
+*** v_ImporterACLproject : Importer command parameter fro the name of the .ACL project that will be created by Importer
+*** v_Src_Project_File   : the Importer created ACL project name with ".ACL" extension added
+*** v_ImporterFIL        : name of the .FIL data file created by Importer
+*** v_New_Layout_Name    : name of the final table we want to add to our project
+***
+********************************************************************************
+
+COMMENT ***** Declare variables
+ASSIGN v_Importerpath       = 'C:\Data\00_Current_Work\ACL_admin\ACLBoot_Camps\Importer\3Advanced\'
+ASSIGN v_thisprojectpath    = 'C:\Users\MikeA665\Downloads\ACL_Importer-Shahed_Khalili\'
+ASSIGN v_report             = ' /rpt:%v_Importerpath%Payroll_Journal_2010_09_24.PDF'
+ASSIGN v_model              = ' /mod:%v_Importerpath%Payroll_PDF.xmod'
+ASSIGN v_exportoption       = ' /expfileopt:overwrite'
+ASSIGN v_ImporterACLproject = ' /exp:%v_Importerpath%IM_Payroll'
+ASSIGN v_Src_Project_File   = ALLTRIM(SPLIT("%v_ImporterACLproject%", "/exp:", 2)) + ".ACL"
+ASSIGN v_ImporterFIL        = '%v_Importerpath%IM_Payroll.FIL'
+ASSIGN v_New_Layout_Name    = 'Payroll'
+
+COMMENT *****Set up the environment
+SET SAFETY OFF
+CLOSE PRIMARY
+CLOSE SECONDARY
+
+COMMENT ***** If this is run in an empty ACL project, we must create the "Stub" table so there is a table layout
+COMMENT ***** to open to enable the EXPORT fields commands that create the new text script T_Layout_Script.TXT
+DIRECTORY *.ACL TO "Stub.FIL"
+   
+COM
+*** We run the ACL Importer to create the output project
+*** We will get a .ACL and a .FIL file in folder specified by the variable v_Importerpath
+***
+*** If the AclImporter.exe file can not be found, add the path to the executable in the command below
+*** typically     "C:\Program Files (x86)\ACL Software\ACL Importer\Program\"
+ 
+EXECUTE 'AclImporter.exe %v_report% %v_model% %v_exportoption% %v_ImporterACLproject%'
+
+
+COMMENT ***** Here we read the .ACL project file into a temp table called T_Objects_Layout 
+COMMENT ***** Note: ACL Importer 11.4.5.0 creates an .ACL project file version 900, 
+COMMENT ***** this script will need rework for the .ACL version 1000 as it's structure has changed 
+COMMENT ***** to accomodate new features  i.e. lines that start with  "["
+   
+IMPORT PRINT TO T_Objects_Layout "T_Objects_Layout.FIL" FROM "%v_Src_Project_File%" SERVER 1 0 RECORD "Detail" 0 1 0 TEST 0 5 AT 1,1,1 7 "" FIELD "Full_Rec" C AT 1,1 SIZE 512,1 DEC 0 WID 76  PIC "" AS ""
+
+
+COM
+*** Here we create a table definition information based on what we read in the Output.ACL file 
+*** We write this information to a temporary script file (T_Layout_Script.txt) to run later. 
+
+    LOCATE Record 2
+    ASSIGN v_definition_Line = Full_Rec 
+    ASSIGN v_record_Length = SPLIT("%v_definition_Line%", BLANKS(1), 3)
+
+    EXPORT FIELDS "OPEN Stub" TO "T_Layout_Script.txt" FIRST 1 ASCII
+    EXPORT FIELDS "EXTRACT BLANKS(%v_Record_Length%) as 'Full_Rec' TO %v_New_Layout_Name% FIRST 1 OPEN" TO "T_Layout_Script.txt" FIRST 1 APPEND ASCII
+    EXPORT FIELDS "DELETE FIELD Full_Rec OK" TO "T_Layout_Script.txt" FIRST 1 APPEND ASCII
+
+    EXPORT FIELDS "DEFINE FIELD "+Full_Rec TO "T_Layout_Script.txt" IF (Full_Rec <> "@") AND (Full_Rec <> "^") APPEND
+    
+COMMENT ***** Execute the script (T_Layout_Script.txt) to create the table layout
+
+    CLOSE PRIMARY 
+    CLOSE SECONDARY
+
+    DELETE BATCH T_Layout_Script OK
+    DO     BATCH T_Layout_Script.txt
+    DELETE BATCH T_Layout_Script OK    
+    DELETE FORMAT T_Objects_Layout OK
+
+COMMENT ***** copy the .FIL file out of the Importer folder to the project folder (if different)
+COMMENT ***** and link it to the new table layout (if large, consider deleting the .FIL in the Importer folder)
+
+    EXECUTE 'cmd /c "copy /Y %v_ImporterFIL% %v_thisprojectpath%%v_New_Layout_Name%.FIL"'
+
+    OPEN "%v_thisprojectpath%%v_New_Layout_Name%.Fil" FORMAT %v_New_Layout_Name%
+
+COMMENT ***** Clean up unnecessary files and tables and reset the environment
+DELETE "Stub.FIL" OK
+DELETE FORMAT Stub OK
+SET SAFETY ON
+DISPLAY VARIABLES
+
+^REPORT   Default_View                       Payroll                          D.T,
+[SKIP] 0
+[TLINES] 0
+[RLINES] 1
+[LINE] 1
+Employee_Name        PICTURE ""
+[LINE] 1
+Company              PICTURE ""
+[LINE] 1
+Pay_Date             PICTURE ""
+[LINE] 1
+SSN                  PICTURE ""
+[LINE] 1
+Total_Gross          PICTURE ""
+[LINE] 1
+FICA                 PICTURE ""
+[LINE] 1
+Federal_WH           PICTURE ""
+[LINE] 1
+State_WH             PICTURE ""
+[LINE] 1
+Net_Pay              PICTURE ""
+[LINE] 1
+Check_Number         PICTURE ""
+[LINE] 1
+Gross_Pay_Description_1 WIDTH 23 PICTURE ""
+[LINE] 1
+Gross_Pay__1         PICTURE ""
+[LINE] 1
+Gross_Pay_Description_2 WIDTH 23 PICTURE ""
+[LINE] 1
+Gross_Pay_2          PICTURE ""
+[LINE] 1
+Gross_Pay_Description_3 WIDTH 23 PICTURE ""
+[LINE] 1
+Gross_Pay_3          PICTURE ""
+[LINE] 1
+Gross_Pay_Description_4 WIDTH 23 PICTURE ""
+[LINE] 1
+Gross_Pay_4          PICTURE ""
+[LINE] 1
+Dept_Gross           PICTURE ""
+[LINE] 1
+Dept_FICA            PICTURE ""
+[LINE] 1
+Dept_Fed_WH          PICTURE ""
+[LINE] 1
+Dept_State_WH        PICTURE ""
+[LINE] 1
+Dept_Net_Paid        PICTURE ""
+[LINE] 1
+Dept_Number          PICTURE ""
+[LINE] 1
+Company_Gross        PICTURE ""
+[LINE] 1
+Company_FICA         PICTURE ""
+[LINE] 1
+Company_Fed_WH       PICTURE ""
+[LINE] 1
+Company_State_WH     WIDTH 16 PICTURE ""
+[LINE] 1
+Company_Net_Paid     WIDTH 16 PICTURE ""
+^FORMAT   Payroll                            Payroll                          "" "Payroll.Fil" 0 ASCII 
+[PARENT_FOLDER_ID] 0
+~.06/15/2013   11:07:33   DIRECTORY *.ACL TO "Stub.FIL"
+~.06/15/2013   11:07:41 Stub EXTRACT BLANKS(395) as 'Full_Rec' TO Payroll FIRST 1 OPEN
+~Input : Records:1           Control Total:0                    
+~Output: Records:1           Control Total:0                    
+[LASTVIEW] "Default_View"
+^OPEN F "Payroll"

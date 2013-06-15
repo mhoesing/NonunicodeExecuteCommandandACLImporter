@@ -1,0 +1,707 @@
+<model version="XMLMOD03.ACL">
+  <location>C:\Data\00_Current_Work\ACL_admin\ACLBoot Camps\Importer\3Advanced</location>
+  <author />
+  <description xml:space="preserve" />
+  <settings>
+    <input>
+      <date_pattern>M/D/Y</date_pattern>
+      <first_year_of_century>50</first_year_of_century>
+      <active_patterns>D,DT,T</active_patterns>
+      <decimal_char>.</decimal_char>
+      <leading_chars>0</leading_chars>
+      <ignore_form_feeds>false</ignore_form_feeds>
+      <ignore_ctrl_chars>false</ignore_ctrl_chars>
+      <input_encoding>ANSI</input_encoding>
+      <input_ascii>false</input_ascii>
+      <case_sensitive_traps>false</case_sensitive_traps>
+      <trap_char_type>E</trap_char_type>
+      <auto_trim>false</auto_trim>
+      <force_break max_page_lines="100" />
+      <pdf_profile output_points="5" output_points_tenths="7" free_form="false" fixed_font="true" autoCropLevel="0" library_version="3.0.0.0" />
+    </input>
+    <grid suppress_zero="false" null_as="(Null)">
+      <table header_lines="1" data_lines="1" />
+    </grid>
+    <comment_position>top</comment_position>
+    <views>
+      <report>
+        <font face="Courier New" size="10" color="0" />
+      </report>
+      <table>
+        <font face="Tahoma" size="10" color="0" />
+      </table>
+      <summary>
+        <font face="Tahoma" size="10" color="0" />
+      </summary>
+    </views>
+    <export>
+      <dbf_field_naming>false</dbf_field_naming>
+      <database>
+        <summary names_from_fields="false" />
+      </database>
+      <text names_row="false" spacing="false" pad_with_zeros="false" character_set="ANSI" eof="false">
+        <delimited character="," quoted="false" names_row_quotes="false" format_dates_with_dashes="false" />
+      </text>
+      <excel apply_formatting="true" enable_advanced="true" />
+    </export>
+    <time_intervals>
+      <year format_mask="&amp;[yyyy]" />
+      <halfyear format_mask="H&amp;[halfyear]-&amp;[yy]" />
+      <quarter format_mask="Q&amp;[qtr]-&amp;[yy]" />
+      <month format_mask="&amp;[monthname]-&amp;[yy]" />
+      <week format_mask="W&amp;[week]-&amp;[yy]" start_day="0" partial_first_week_is_1="false" />
+      <day format_mask="&amp;[dayofyear]" />
+      <iso_year format_mask="&amp;[isoyear]" />
+      <iso_week format_mask="&amp;[isoyear]-W&amp;[isoweek]" />
+      <fiscal_year format_mask="FY&amp;[fendyear]" year_type="month_based" start_or_end="start_on_first_of_month" reference_month="1" reference_day="1" />
+      <fiscal_halfyear format_mask="FH&amp;[fhalfyear]-&amp;[fendyy]" />
+      <fiscal_quarter format_mask="FQ&amp;[fqtr]-&amp;[fendyy]" />
+      <fiscal_period format_mask="FP&amp;[fperiod]-&amp;[fendyy]" period_type="calendar_months" period_of_53rd_week="12" />
+      <fiscal_week format_mask="FW&amp;[fweek]-&amp;[fendyy]" start_day="0" partial_first_week_is_1="false" />
+    </time_intervals>
+  </settings>
+  <templates>
+    <template>
+      <name>Detail</name>
+      <level_type>detail</level_type>
+      <number>11</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>                                                                                                                        ÑÑÑÑÑ</mask>
+      <sample>
+        <line>                                                              $1,052.76        $90.00    $200.00    $50.00    $712.76   10001 </line>
+      </sample>
+    </template>
+    <template>
+      <name>Employee_Name</name>
+      <level_type>append</level_type>
+      <number>1</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>                                   W100</mask>
+      <sample>
+        <line>                Able Barnes        W100 Base                  $1,000.01                                                       </line>
+      </sample>
+    </template>
+    <template>
+      <name>SSN</name>
+      <level_type>append</level_type>
+      <number>2</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>                   -  -</mask>
+      <sample>
+        <line>                123-45-6789        W101 OT                    $3.75                                                           </line>
+      </sample>
+    </template>
+    <template>
+      <name>Gross_Pay_3_or_More</name>
+      <level_type>append</level_type>
+      <number>3</number>
+      <clearing_template>11</clearing_template>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>              ßßßßßßßßßßßßßßßßßßßßßW</mask>
+      <sample>
+        <line>                                   W150 Bonus                 $50.00                                                          </line>
+        <line>                                   W160 Adjustment            -1.00                                                           </line>
+      </sample>
+    </template>
+    <template>
+      <name>Page_Header</name>
+      <level_type>page_header</level_type>
+      <number>0</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>2</trap_line>
+      <mask>              REPORT:</mask>
+      <sample>
+        <line>              CO:                                     ABC Company                                                             </line>
+        <line>              REPORT:                                Payroll Report                                                           </line>
+        <line>              DATE:                                   Sep 24, 2010                                                            </line>
+      </sample>
+    </template>
+    <template>
+      <name>Dept_Totals</name>
+      <level_type>footer</level_type>
+      <number>4</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>              Department Totals:</mask>
+      <sample>
+        <line>              Department Totals:                              $2,603.76        $229.00   $500.00    $150.00   $1,724.76       </line>
+      </sample>
+    </template>
+    <template>
+      <name>Department_Name_Number</name>
+      <level_type>append</level_type>
+      <number>5</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>              Department:</mask>
+      <sample>
+        <line>              Department: A100                                Total Pay         FICA     Fed WH    State WH   Net Pay   Check </line>
+      </sample>
+    </template>
+    <template>
+      <name>Company_Totals</name>
+      <level_type>footer</level_type>
+      <number>6</number>
+      <is_float>false</is_float>
+      <is_multicolumn>false</is_multicolumn>
+      <trap_line>1</trap_line>
+      <mask>              Company Totals:</mask>
+      <sample>
+        <line>              Company Totals:                                 $3,153.76        $269.00    $575.00    $165.00   $2,144.76      </line>
+      </sample>
+    </template>
+  </templates>
+  <fields>
+    <table_field style="report">
+      <name>Employee_Name</name>
+      <size>20</size>
+      <type>C</type>
+      <sequence>1</sequence>
+      <display_length>15</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>1</level>
+        <length>20</length>
+        <line>1</line>
+        <offset>16</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company</name>
+      <size>19</size>
+      <type>C</type>
+      <sequence>2</sequence>
+      <display_length>15</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>0</level>
+        <length>19</length>
+        <line>1</line>
+        <offset>51</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Pay_Date</name>
+      <size>8</size>
+      <type>D</type>
+      <format_type>1</format_type>
+      <sequence>3</sequence>
+      <display_length>10</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>0</level>
+        <length>12</length>
+        <line>3</line>
+        <offset>55</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>SSN</name>
+      <size>11</size>
+      <type>C</type>
+      <sequence>4</sequence>
+      <display_length>12</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>2</level>
+        <length>11</length>
+        <line>1</line>
+        <offset>17</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Total_Gross</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>5</sequence>
+      <display_length>11</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>12</length>
+        <line>1</line>
+        <offset>62</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>FICA</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>6</sequence>
+      <display_length>8</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>11</length>
+        <line>1</line>
+        <offset>77</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Federal_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>7</sequence>
+      <display_length>12</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>9</length>
+        <line>1</line>
+        <offset>89</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>State_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>8</sequence>
+      <display_length>10</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>9</length>
+        <line>1</line>
+        <offset>99</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Net_Pay</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>9</sequence>
+      <display_length>10</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>11</length>
+        <line>1</line>
+        <offset>109</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Check_Number</name>
+      <size>5</size>
+      <type>C</type>
+      <sequence>10</sequence>
+      <display_length>14</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>11</level>
+        <length>5</length>
+        <line>1</line>
+        <offset>121</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_Description_1</name>
+      <size>22</size>
+      <type>C</type>
+      <sequence>11</sequence>
+      <display_length>22</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>1</level>
+        <length>22</length>
+        <line>1</line>
+        <offset>36</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay _1</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>12</sequence>
+      <display_length>13</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>1</level>
+        <length>18</length>
+        <line>1</line>
+        <offset>59</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_Description_2</name>
+      <size>24</size>
+      <type>C</type>
+      <sequence>13</sequence>
+      <display_length>22</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>2</level>
+        <length>24</length>
+        <line>1</line>
+        <offset>36</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_2</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>14</sequence>
+      <display_length>12</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>2</level>
+        <length>16</length>
+        <line>1</line>
+        <offset>61</offset>
+        <line_advanced>
+          <start type="preceding" string="w" />
+          <stop type="lines" count="1" />
+        </line_advanced>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_Description_3</name>
+      <size>24</size>
+      <type>C</type>
+      <sequence>15</sequence>
+      <display_length>22</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>3</level>
+        <length>24</length>
+        <line>1</line>
+        <offset>36</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_3</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>16</sequence>
+      <display_length>12</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>3</level>
+        <length>15</length>
+        <line>1</line>
+        <offset>61</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_Description_4</name>
+      <size>24</size>
+      <type>C</type>
+      <sequence>17</sequence>
+      <display_length>22</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>3</level>
+        <length>24</length>
+        <line>2</line>
+        <offset>36</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Gross_Pay_4</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>18</sequence>
+      <display_length>12</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>3</level>
+        <length>15</length>
+        <line>2</line>
+        <offset>61</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_Gross</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>19</sequence>
+      <display_length>11</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>4</level>
+        <length>15</length>
+        <line>1</line>
+        <offset>62</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_FICA</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>20</sequence>
+      <display_length>10</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>4</level>
+        <length>10</length>
+        <line>1</line>
+        <offset>78</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_Fed_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>21</sequence>
+      <display_length>13</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>4</level>
+        <length>9</length>
+        <line>1</line>
+        <offset>89</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_State_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>22</sequence>
+      <display_length>15</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>4</level>
+        <length>10</length>
+        <line>1</line>
+        <offset>99</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_Net_Paid</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>23</sequence>
+      <display_length>14</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>4</level>
+        <length>10</length>
+        <line>1</line>
+        <offset>110</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Dept_Number</name>
+      <size>4</size>
+      <type>C</type>
+      <sequence>24</sequence>
+      <display_length>13</display_length>
+      <alignment>L</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>5</level>
+        <length>4</length>
+        <line>1</line>
+        <offset>27</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company_Gross</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>25</sequence>
+      <display_length>15</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>6</level>
+        <length>14</length>
+        <line>1</line>
+        <offset>61</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company_FICA</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>26</sequence>
+      <display_length>14</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>6</level>
+        <length>13</length>
+        <line>1</line>
+        <offset>76</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company_Fed_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>27</sequence>
+      <display_length>17</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>6</level>
+        <length>9</length>
+        <line>1</line>
+        <offset>90</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company_State_WH</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>28</sequence>
+      <display_length>18</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>6</level>
+        <length>10</length>
+        <line>1</line>
+        <offset>100</offset>
+      </input>
+    </table_field>
+    <table_field style="report">
+      <name>Company_Net_Paid</name>
+      <size>18</size>
+      <type>N</type>
+      <decimal>2</decimal>
+      <format_type>2</format_type>
+      <sequence>29</sequence>
+      <display_length>17</display_length>
+      <alignment>R</alignment>
+      <verify left="true" right="true" type="true" />
+      <input>
+        <level>6</level>
+        <length>12</length>
+        <line>1</line>
+        <offset>111</offset>
+      </input>
+    </table_field>
+  </fields>
+  <charts />
+  <audit>
+    <save action="Created" author="MikeA665" time="2012-11-20T18:43:47" />
+    <save action="Saved" author="MikeA665" time="2012-11-20T19:00:26">
+      <item class="table_field" name="Employee_Name" action="Edited" />
+      <item class="table_field" name="SSN" action="Edited" />
+      <item class="table_field" name="Total_Gross" action="Edited" />
+      <item class="table_field" name="FICA" action="Edited" />
+      <item class="table_field" name="Federal_WH" action="Edited" />
+      <item class="table_field" name="State_WH" action="Edited" />
+      <item class="table_field" name="Net_Pay" action="Edited" />
+      <item class="table_field" name="Check_Number" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_1" action="Edited" />
+      <item class="table_field" name="Gross_Pay _1" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_2" action="Edited" />
+      <item class="table_field" name="Gross_Pay_2" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_3" action="Edited" />
+      <item class="table_field" name="Gross_Pay_3" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_4" action="Edited" />
+      <item class="table_field" name="Gross_Pay_4" action="Edited" />
+      <item class="table_field" name="Company" action="Added" />
+      <item class="table_field" name="Pay_Date" action="Added" />
+      <item class="table_field" name="Dept_Gross" action="Added" />
+      <item class="table_field" name="Dept_FICA" action="Added" />
+      <item class="table_field" name="Dept_Fed_WH" action="Added" />
+      <item class="table_field" name="Dept_State_WH" action="Added" />
+      <item class="table_field" name="Dept_Net_Paid" action="Added" />
+      <item class="table_field" name="Dept_Number" action="Added" />
+      <item class="table_field" name="Company_Gross" action="Added" />
+      <item class="table_field" name="Company_FICA" action="Added" />
+      <item class="table_field" name="Company_Fed_WH" action="Added" />
+      <item class="table_field" name="Company_State_WH" action="Added" />
+      <item class="table_field" name="Company_Net_Paid" action="Added" />
+      <item class="template" name="Page_Header" action="Added" />
+      <item class="template" name="Dept_Totals" action="Added" />
+      <item class="template" name="Department_Name_Number" action="Added" />
+      <item class="template" name="Company_Totals" action="Added" />
+    </save>
+    <save action="Saved" author="MikeA665" time="2012-11-21T13:17:01">
+      <item class="table_field" name="Company" action="Edited" />
+      <item class="table_field" name="Pay_Date" action="Edited" />
+      <item class="table_field" name="Employee_Name" action="Edited" />
+      <item class="table_field" name="Net_Pay" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_1" action="Edited" />
+      <item class="table_field" name="Gross_Pay _1" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_2" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_3" action="Edited" />
+      <item class="table_field" name="Gross_Pay_3" action="Edited" />
+      <item class="table_field" name="Gross_Pay_Description_4" action="Edited" />
+      <item class="table_field" name="Gross_Pay_4" action="Edited" />
+      <item class="table_field" name="Dept_Gross" action="Edited" />
+      <item class="table_field" name="Dept_Fed_WH" action="Edited" />
+      <item class="table_field" name="Dept_State_WH" action="Edited" />
+      <item class="table_field" name="Dept_Net_Paid" action="Edited" />
+      <item class="table_field" name="Dept_Number" action="Edited" />
+      <item class="table_field" name="Company_Gross" action="Edited" />
+      <item class="table_field" name="Company_FICA" action="Edited" />
+      <item class="table_field" name="Company_Fed_WH" action="Edited" />
+      <item class="table_field" name="Company_State_WH" action="Edited" />
+      <item class="table_field" name="Company_Net_Paid" action="Edited" />
+    </save>
+  </audit>
+</model>
